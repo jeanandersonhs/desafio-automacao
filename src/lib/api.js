@@ -1,11 +1,11 @@
 
 import axios from 'axios'
-import {URL} from '../constants/api-route'
+import {URL} from '../constants/apiRoutes'
 
 
 
 export const api = axios.create({
-    baseURL: 'URL',
+    baseURL: URL,
     headers: {
         'Content-Type': 'application/json'
     }
