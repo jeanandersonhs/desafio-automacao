@@ -2,8 +2,6 @@ import { api } from "../lib/api"
 import { API_ROUTES } from "../constants/apiRoutes"
 
 
-
-
 const handleError = (error, fallback) => {
     if (error instanceof Error && error.response) {
         const message = error.response.data?.message;
@@ -19,14 +17,33 @@ const handleError = (error, fallback) => {
 export const apiService = {
   
     async getUsers() {
+        
         try {
             const response = await api.get(API_ROUTES.USERS);
             return response.data;
         } catch (error) {
             handleError(error, 'Falha ao buscar usuários');
         }
-            
 
+    },
+
+    async getPostByUser(userId) {
+        try {
+            const response = await api.get(`${API_ROUTES.POSTS}?userId=${userId}`);
+            return response.data;
+        } catch (error) {
+            handleError(error, 'Falha ao buscar posts do usuário');
+        }
+    },
+
+    async getCommentsByPost(postId) {
+        try {
+            const response = await api.get(`${API_ROUTES.COMMENTS}?postId=${postId}`);
+            return response.data;
+        } catch (error) {
+            handleError(error, 'Falha ao buscar comentários do post');
+        }
 
     }
+
 }
