@@ -1,23 +1,53 @@
-import { User } from "lucide-react";
 import { useMemo, useState } from "react";
-import { post } from "node_modules/axios/index.cjs";
+import { useCommentsQuery } from "../hooks/queries/useComentsQuery";
 
 
 
-export default function filterResult({ users, idUserSelected, posts}) {
+// Sub-componente que busca os comentários do post individualmente
+function PostItem({ post }) {
+    const { data: comments = [], isLoading } = useCommentsQuery(post.id);
+    return (
+        <div className="border rounded-lg p-4">
+            <h4 className="font-semibold">{post.title}</h4>
+            <p>{post.body}</p>
+            <p className="mt-2 text-sm text-gray-500">
+                Caracteres: {post.body.length} | Comentários: {comments.length}
+            </p>
+            {isLoading ? (
+                <p>Carregando comentários...</p>
+            ) : (
+                <ul className="list-disc list-inside mt-2">
+                    {comments.map(comment => (
+                        <li key={comment.id}>
+                            <strong>{comment.name}:</strong> {comment.body}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+}
 
-    const {charactersFilter, setCharactersFilter} = useState(null);
-    const {minPostsFilter, setMinPostsFilter} = useState(null); //definir se é ativo ou inativo
-    
+
+
+
+export default function FilterResult({ users, idUserSelected, posts }) {
+
+    const [charactersFilter, setCharactersFilter] = useState('');
+    const [minPostsFilter, setMinPostsFilter] = useState(''); //definir se é ativo ou inativo
+
+    const selectedUser = useMemo(
+        () => users.find(u => u.id === idUserSelected),
+        [users, idUserSelected]
+    );
+
+
     
     //filtra os posts com base na quantidade de caracteres do post
     const filteredPosts = useMemo(() => {
         if (!posts) return [];
 
         return posts.filter(post => {
-
-            const user = users.find(user => user.id === post.userId);
-            if (!user) return false;
 
             // Filter by minimum characters in post body
             if (charactersFilter && post.body.length < Number(charactersFilter)) return false;
@@ -28,25 +58,20 @@ export default function filterResult({ users, idUserSelected, posts}) {
             // }
             return true;
         });
-    }, [charactersFilter, minPostsFilter, posts, users]);
-
-
-    const metricas = (userMetrics) => {
-        const totalPosts = posts.length;
-        const nameUser = users.find(user => user.id === userMetrics.id)?.name;
-        const avgChars = posts.reduce((acc, post) => acc + post.body.length, 0) / totalPosts;
-        const avgComments = posts.reduce((acc, post) => acc + post.comments.length, 0) / totalPosts;
-        const status = posts.length >= Number(minPostsFilter) ? 'Ativo' : 'Inativo';
-
-        return {
-            name: nameUser,
-            totalPosts,
-            avgChars,
-            avgComments,
-            status
-        }
         
-    }
+    }, [charactersFilter, minPostsFilter, posts]);
+
+
+    const metricas = useMemo(() => {
+        if (!posts.length) return null;
+        const avgChars = posts.reduce((acc, p) => acc + p.body.length, 0) / posts.length;
+        const isActive = posts.length >= Number(minPostsFilter || 0);
+        return {
+            totalPosts: posts.length,
+            avgChars,
+            status: minPostsFilter ? (isActive ? 'Ativo' : 'Inativo') : '—',
+        };
+    }, [posts, minPostsFilter]);
 
    const handleCaracteres = (e) => {
         const value = e.target.value;
@@ -66,39 +91,33 @@ export default function filterResult({ users, idUserSelected, posts}) {
         <label className="text-sm font-semibold text-amber-300">Minimo de caracteres</label>
         <input
             type="number"
+            value={charactersFilter}
             onChange={(e) => handleCaracteres(e)}
             />
 
         <label className="text-sm font-semibold">Minimo de posts para ser ativo</label>
         <input
             type="number"
+            value={minPostsFilter}
             onChange={(e) => handleMinimoPosts(e)}
             />
 
         
         <section className="flex flex-col gap-2">
 
-        <h3>Resultados</h3>
+            {metricas && (
+                <div className="border rounded-lg p-4">
+                    <h4>Métricas de {selectedUser?.name}</h4>
+                    <p>Total de Posts: {metricas.totalPosts}</p>
+                    <p>Média de Caracteres por Post: {metricas.avgChars.toFixed(2)}</p>
+                    <p>Status: {metricas.status}</p>
+                </div>
+            )}
 
-        {filteredPosts.map(post => (
-            <div key={post.id} className="border rounded-lg p-4">
-                <h4 className="font-semibold">{post.title}</h4>
-                <p>{post.body}</p>
-            </div>
-         )
-
-
-        )}
-
-        {metricas.map(userMetrics => (
-            <div key={userMetrics.id} className="border rounded-lg p-4">
-                <h4 className="font-semibold">Metricas de {userMetrics.name}</h4>
-                <p>Total de Posts: {userMetrics.totalPosts}</p>
-                <p>Média de Caracteres por Post: {userMetrics.avgChars.toFixed(2)}</p>
-                <p>Média de Comentários por Post: {userMetrics.avgComments.toFixed(2)}</p>
-                <p>Status: {userMetrics.status}</p>
-            </div>
-        ))}
+            <h3>Resultados ({filteredPosts.length} posts)</h3>
+            {filteredPosts.map(post => (
+                <PostItem key={post.id} post={post} />
+            ))}
 
         </section>
 
