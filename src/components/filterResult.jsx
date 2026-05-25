@@ -13,17 +13,6 @@ function PostItem({ post }) {
             <p className="mt-2 text-sm text-gray-500">
                 Caracteres: {post.body.length} | Comentários: {comments.length}
             </p>
-            {isLoading ? (
-                <p>Carregando comentários...</p>
-            ) : (
-                <ul className="list-disc list-inside mt-2">
-                    {comments.map(comment => (
-                        <li key={comment.id}>
-                            <strong>{comment.name}:</strong> {comment.body}
-                        </li>
-                    ))}
-                </ul>
-            )}
         </div>
     );
 }
