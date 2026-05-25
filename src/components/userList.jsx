@@ -5,15 +5,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 const UserList = ({ users }) => {
   return (
-    <div className="w-120 border rounded-lg overflow-hidden">
+    <div className="overflow-hidden rounded-[1.6rem] border border-[rgba(79,221,60,0.14)] bg-white/90">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12">#</TableHead>
+            <TableHead>#</TableHead>
             <TableHead>Nome</TableHead>
             <TableHead>Email</TableHead>
           </TableRow>
@@ -23,9 +23,7 @@ const UserList = ({ users }) => {
             <TableRow key={user.id}>
               <TableCell className="font-medium">{index + 1}</TableCell>
               <TableCell>{user.name}</TableCell>
-              <TableCell className="text-neutral-600 dark:text-neutral-400">
-                {user.email}
-              </TableCell>
+              <TableCell className="text-neutral-600 dark:text-neutral-400">{user.email}</TableCell>
             </TableRow>
           ))}
         </TableBody>
