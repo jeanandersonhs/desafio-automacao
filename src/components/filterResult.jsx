@@ -22,10 +22,10 @@ export default function filterResult({ users, idUserSelected, posts}) {
             // Filter by minimum characters in post body
             if (charactersFilter && post.body.length < Number(charactersFilter)) return false;
             // Filter by minimum posts per user
-            if (minPostsFilter) {
-                const userPostsCount = posts.filter(p => p.userId === user.id).length;
-                if (userPostsCount < Number(minPostsFilter)) return false;
-            }
+            // if (minPostsFilter) {
+            //     const userPostsCount = posts.filter(p => p.userId === user.id).length;
+            //     if (userPostsCount < Number(minPostsFilter)) return false;
+            // }
             return true;
         });
     }, [charactersFilter, minPostsFilter, posts, users]);
@@ -36,7 +36,7 @@ export default function filterResult({ users, idUserSelected, posts}) {
         const nameUser = users.find(user => user.id === userMetrics.id)?.name;
         const avgChars = posts.reduce((acc, post) => acc + post.body.length, 0) / totalPosts;
         const avgComments = posts.reduce((acc, post) => acc + post.comments.length, 0) / totalPosts;
-        const status = posts.length >= minPostsFilter ? 'Ativo' : 'Inativo';
+        const status = posts.length >= Number(minPostsFilter) ? 'Ativo' : 'Inativo';
 
         return {
             name: nameUser,
@@ -89,6 +89,16 @@ export default function filterResult({ users, idUserSelected, posts}) {
 
 
         )}
+
+        {metricas.map(userMetrics => (
+            <div key={userMetrics.id} className="border rounded-lg p-4">
+                <h4 className="font-semibold">Metricas de {userMetrics.name}</h4>
+                <p>Total de Posts: {userMetrics.totalPosts}</p>
+                <p>Média de Caracteres por Post: {userMetrics.avgChars.toFixed(2)}</p>
+                <p>Média de Comentários por Post: {userMetrics.avgComments.toFixed(2)}</p>
+                <p>Status: {userMetrics.status}</p>
+            </div>
+        ))}
 
         </section>
 
