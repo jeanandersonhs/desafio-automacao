@@ -4,10 +4,11 @@ import { apiService } from "../../services/api-service";
 
 
 
-export function useUserQuery(postId) {
+export function useCommentsQuery(postId) {
 
     return useQuery({
-        queryKey: ['posts', postId],
-        queryFn: () => apiService.getCommentsByPost(postId)
+        queryKey: ['comments', postId],
+        queryFn: () => apiService.getCommentsByPost(postId),
+        enabled: !!postId,
     })
 }
