@@ -1,118 +1,121 @@
 import { useMemo, useState } from "react";
-import { useCommentsQuery } from "../hooks/queries/useComentsQuery";
-
-
+import { useCommentsQuery, usePostsWithComments } from "../hooks/queries/useComentsQuery";
 
 // Sub-componente que busca os comentários do post individualmente
 function PostItem({ post }) {
-    const { data: comments = [], isLoading } = useCommentsQuery(post.id);
-    return (
-        <div className="border rounded-lg p-4">
-            <h4 className="font-semibold">{post.title}</h4>
-            <p>{post.body}</p>
-            <p className="mt-2 text-sm text-gray-500">
-                Caracteres: {post.body.length} | Comentários: {comments.length}
-            </p>
-        </div>
-    );
+  const { data: comments = [] } = useCommentsQuery(post.id);
+
+  return (
+    <article className="rounded-[1.6rem] border border-[rgba(79,221,60,0.14)] bg-white/90 p-6 shadow-[0_24px_56px_rgba(31,60,29,0.08)] transition-transform duration-200 hover:-translate-y-1 hover:border-[rgba(79,221,60,0.26)]">
+      <h4 className="text-lg font-semibold text-stone-900">{post.title}</h4>
+      <p className="mt-3 text-stone-700">{post.body}</p>
+      <p className="mt-4 text-sm text-stone-500">
+        Caracteres: {post.body.length} | Comentários: {comments.length}
+      </p>
+    </article>
+  );
 }
 
-
-
-
 export default function FilterResult({ users, idUserSelected, posts }) {
-
-    const [charactersFilter, setCharactersFilter] = useState('');
-    const [minPostsFilter, setMinPostsFilter] = useState(''); //definir se é ativo ou inativo
-
-    const selectedUser = useMemo(
-        () => users.find(u => u.id === idUserSelected),
-        [users, idUserSelected]
-    );
+  const [charactersFilter, setCharactersFilter] = useState('');
+  const [minPostsFilter, setMinPostsFilter] = useState('');
+  const { data: postsWithComments = []} = usePostsWithComments(posts);
 
 
-    
-    //filtra os posts com base na quantidade de caracteres do post
-    const filteredPosts = useMemo(() => {
-        if (!posts) return [];
+  const selectedUser = useMemo(
+    () => users.find((u) => u.id === idUserSelected),
+    [users, idUserSelected]
+  );
 
-        return posts.filter(post => {
+  const filteredPosts = useMemo(() => {
+    if (!posts) return [];
 
-            // Filter by minimum characters in post body
-            if (charactersFilter && post.body.length < Number(charactersFilter)) return false;
-            // Filter by minimum posts per user
-            // if (minPostsFilter) {
-            //     const userPostsCount = posts.filter(p => p.userId === user.id).length;
-            //     if (userPostsCount < Number(minPostsFilter)) return false;
-            // }
-            return true;
-        });
-        
-    }, [charactersFilter, minPostsFilter, posts]);
+    return posts.filter((post) => {
+      if (charactersFilter && post.body.length < Number(charactersFilter)) return false;
+      return true;
+    });
+  }, [charactersFilter, posts]);
 
+  const filteredPostsWithComments = useMemo(() => {
+    if (!postsWithComments.length || !filteredPosts.length) return [];
 
-    const metricas = useMemo(() => {
-        if (!posts.length) return null;
-        const avgChars = posts.reduce((acc, p) => acc + p.body.length, 0) / posts.length;
-        const isActive = posts.length >= Number(minPostsFilter || 0);
-        return {
-            totalPosts: posts.length,
-            avgChars,
-            status: minPostsFilter ? (isActive ? 'Ativo' : 'Inativo') : '—',
-        };
-    }, [posts, minPostsFilter]);
+    const filteredPostIds = new Set(filteredPosts.map((post) => post.id));
+    return postsWithComments.filter((post) => filteredPostIds.has(post.id));
+  }, [filteredPosts, postsWithComments]);
 
-   const handleCaracteres = (e) => {
-        const value = e.target.value;
-        setCharactersFilter(value);
+  const metricas = useMemo(() => {
+    if (!filteredPosts.length) return null;
+    const avgCommentsByPost = filteredPostsWithComments.reduce((acc, p) => acc + (p.comments?.length || 0), 0) / filteredPostsWithComments.length || 0;
+    const avgChars = filteredPosts.reduce((acc, p) => acc + p.body.length, 0) / filteredPosts.length || 1;
+    const isActive = filteredPosts.length >= Number(minPostsFilter || 0);
+    return {
+      totalPosts: filteredPosts.length,
+      avgChars,
+      avgCommentsByPost,
+      status: minPostsFilter ? (isActive ? 'Ativo' : 'Inativo') : '—',
+    };
+  }, [minPostsFilter, filteredPosts, filteredPostsWithComments]);
 
-  console.log(value);
-   }
+  const handleCaracteres = (e) => {
+    setCharactersFilter(e.target.value);
+  };
 
-   const handleMinimoPosts = (e) => {
-        const value = e.target.value;
-        setMinPostsFilter(value);
-        console.log(value);
-   }
+  const handleMinimoPosts = (e) => {
+    setMinPostsFilter(e.target.value);
+  };
 
-    return(
-        <>
-        <label className="text-sm font-semibold text-amber-300">Minimo de caracteres</label>
-        <input
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-3">
+          <label htmlFor="characters-filter" className="text-sm font-semibold text-stone-700">
+            Mínimo de caracteres
+          </label>
+          <input
+            id="characters-filter"
+            className="min-h-[3.35rem] w-full rounded-2xl border border-[rgba(79,221,60,0.18)] bg-white/90 px-4 text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] outline-none transition duration-200 focus:border-emerald-700 focus:ring-4 focus:ring-[rgba(79,221,60,0.14)]"
             type="number"
             value={charactersFilter}
-            onChange={(e) => handleCaracteres(e)}
-            />
+            onChange={handleCaracteres}
+            placeholder="Ex: 80"
+          />
+        </div>
 
-        <label className="text-sm font-semibold">Minimo de posts para ser ativo</label>
-        <input
+        <div className="grid gap-3">
+          <label htmlFor="min-posts-filter" className="text-sm font-semibold text-stone-700">
+            Mínimo de posts para ser ativo
+          </label>
+          <input
+            id="min-posts-filter"
+            className="min-h-[3.35rem] w-full rounded-2xl border border-[rgba(79,221,60,0.18)] bg-white/90 px-4 text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] outline-none transition duration-200 focus:border-emerald-700 focus:ring-4 focus:ring-[rgba(79,221,60,0.14)]"
             type="number"
             value={minPostsFilter}
-            onChange={(e) => handleMinimoPosts(e)}
-            />
+            onChange={handleMinimoPosts}
+            placeholder="Ex: 5"
+          />
+        </div>
+      </div>
 
-        
-        <section className="flex flex-col gap-2">
+      {metricas && (
+        <div className="rounded-[1.6rem] border border-[rgba(79,221,60,0.14)] bg-white/90 p-6 shadow-[0_24px_56px_rgba(31,60,29,0.08)]">
+          <h4 className="text-lg font-semibold text-emerald-900">
+            Métricas de {selectedUser?.name || 'usuário selecionado'}
+          </h4>
+          <p className="mt-4 text-stone-700">Total de Posts: {metricas.totalPosts}</p>
+          <p className="mt-2 text-stone-700">Média de Caracteres por Post: {metricas.avgChars.toFixed(2)}</p>
+          <p className="mt-2 text-stone-700">Media de Comentário por Post:{metricas.avgCommentsByPost.toFixed(2)}</p>
+          <p className="mt-2 text-stone-700">Status: {metricas.status}</p>
+        </div>
+      )}
 
-            {metricas && (
-                <div className="border rounded-lg p-4">
-                    <h4>Métricas de {selectedUser?.name}</h4>
-                    <p>Total de Posts: {metricas.totalPosts}</p>
-                    <p>Média de Caracteres por Post: {metricas.avgChars.toFixed(2)}</p>
-                    <p>Status: {metricas.status}</p>
-                </div>
-            )}
-
-            <h3>Resultados ({filteredPosts.length} posts)</h3>
-            {filteredPosts.map(post => (
-                <PostItem key={post.id} post={post} />
-            ))}
-
-        </section>
-
-        </>
-
-    )
-
-
+      <h3 className="text-xl font-semibold text-stone-900">
+        Resultados ({filteredPosts.length} posts)
+      </h3>
+      <div className="grid gap-4">
+        {filteredPosts.map((post) => (
+          <PostItem key={post.id} post={post} />
+        ))}
+      </div>
+    </div>
+  );
 }
