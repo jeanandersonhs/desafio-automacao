@@ -1,10 +1,10 @@
 
 
-export default function RelatorioService(users) {
+export default class RelatorioService {
 
     
-    
-    const gerarRelatorio = () =>{
+
+    static gerarRelatorio(metricas) {
         // Lógica para gerar o relatório
         console.log("Gerando relatório...");
     }
