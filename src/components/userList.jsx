@@ -29,7 +29,7 @@ const UserList = ({ users }) => {
         </TableBody>
       </Table>
     </div>
-  )
-}
+  );
+};
 
 export default UserList;
