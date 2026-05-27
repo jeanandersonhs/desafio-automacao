@@ -4,6 +4,8 @@ import SelectUser from './components/selectUser';
 import FilterResult from './components/filterResult';
 import { useUserQuery } from './hooks/queries/useUserQuery';
 import { usePostQuery } from './hooks/queries/usePostQuery';
+import {Loading} from './components/ui/loading';
+import { toast } from 'sonner'
 
 function App() {
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -15,6 +17,7 @@ function App() {
     return (
       <p className="mx-auto mt-24 max-w-xl rounded-4xl border border-[rgba(79,221,60,0.18)] bg-white/90 px-8 py-6 text-center text-stone-700 shadow-[0_24px_64px_rgba(31,58,30,0.12)]">
         Carregando usuários...
+        <Loading />
       </p>
     );
 
@@ -28,7 +31,7 @@ function App() {
   const onSelect = (e) => {
     const userId = Number(e.target.value);
     setSelectedUserId(userId);
-    console.log('Usuário selecionado:', userId);
+    toast.success('Usuário selecionado com sucesso!');
   };
 
   return (
