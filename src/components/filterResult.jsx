@@ -1,5 +1,9 @@
 import { useMemo, useState } from "react";
 import { useCommentsQuery, usePostsWithComments } from "../hooks/queries/useComentsQuery";
+import { Button } from "./ui/button";
+import RelatorioService from "../services/relatorioService";
+import Metricas from "./Metricas";
+import Resultados from "./Resultados";
 
 // Sub-componente que busca os comentários do post individualmente
 function PostItem({ post }) {
@@ -7,9 +11,9 @@ function PostItem({ post }) {
 
   return (
     <article className="rounded-[1.6rem] border border-[rgba(79,221,60,0.14)] bg-white/90 p-6 shadow-[0_24px_56px_rgba(31,60,29,0.08)] transition-transform duration-200 hover:-translate-y-1 hover:border-[rgba(79,221,60,0.26)]">
-      <h4 className="text-lg font-semibold text-stone-900">{post.title}</h4>
-      <p className="mt-3 text-stone-700">{post.body}</p>
-      <p className="mt-4 text-sm text-stone-500">
+      <h4 className="text-sm font-semibold text-stone-900">{post.title}</h4>
+      <p className="mt-1 text-stone-700">{post.body}</p>
+      <p className="mt-2 text-sm text-stone-500">
         Caracteres: {post.body.length} | Comentários: {comments.length}
       </p>
     </article>
@@ -52,7 +56,7 @@ export default function FilterResult({ users, idUserSelected, posts }) {
       totalPosts: filteredPosts.length,
       avgChars,
       avgCommentsByPost,
-      status: minPostsFilter ? (isActive ? 'Ativo' : 'Inativo') : '—',
+      status: minPostsFilter ? (isActive ? 'Ativo' : 'Inativo') : 'Ativo',
     };
   }, [minPostsFilter, filteredPosts, filteredPostsWithComments]);
 
@@ -63,6 +67,10 @@ export default function FilterResult({ users, idUserSelected, posts }) {
   const handleMinimoPosts = (e) => {
     setMinPostsFilter(e.target.value);
   };
+
+  const handleRelatorio = (metricas) => {
+    return RelatorioService.gerarRelatorio(metricas)  ;
+  }
 
   return (
     <div className="space-y-6">
@@ -97,25 +105,33 @@ export default function FilterResult({ users, idUserSelected, posts }) {
       </div>
 
       {metricas && (
+
+        
         <div className="rounded-[1.6rem] border border-[rgba(79,221,60,0.14)] bg-white/90 p-6 shadow-[0_24px_56px_rgba(31,60,29,0.08)]">
-          <h4 className="text-lg font-semibold text-emerald-900">
-            Métricas de {selectedUser?.name || 'usuário selecionado'}
-          </h4>
-          <p className="mt-4 text-stone-700">Total de Posts: {metricas.totalPosts}</p>
-          <p className="mt-2 text-stone-700">Média de Caracteres por Post: {metricas.avgChars.toFixed(2)}</p>
-          <p className="mt-2 text-stone-700">Media de Comentário por Post:{metricas.avgCommentsByPost.toFixed(2)}</p>
-          <p className="mt-2 text-stone-700">Status: {metricas.status}</p>
+          <Metricas name={selectedUser?.name} metricas={metricas} />
+          <Button 
+            className="mt-4" 
+            onClick={handleRelatorio}>
+              Gerar Relatório
+          
+          </Button>
         </div>
       )}
 
-      <h3 className="text-xl font-semibold text-stone-900">
+      {/* <h3 className="text-xl font-semibold text-stone-900">
         Resultados ({filteredPosts.length} posts)
       </h3>
       <div className="grid gap-4">
         {filteredPosts.map((post) => (
           <PostItem key={post.id} post={post} />
         ))}
-      </div>
+      </div> */}
+
+      {filteredPosts.length > 0 && (
+        <Resultados 
+          filteredPosts={filteredPosts} 
+          PostItem={PostItem} />
+      )}
     </div>
   );
 }
