@@ -13,7 +13,7 @@ Aplicação fullstack de análise de usuários que consome a API pública [JSONP
 
 ---
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 ### Frontend
 
