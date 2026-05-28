@@ -9,7 +9,8 @@ export const API_ROUTES = {
     ALBUMS: '/albums',
     PHOTOS: '/photos',
     TODOS: '/todos',
-    USERS: '/users'
+    USERS: '/users',
+    REPORTS: '/reports'
   }
 
 

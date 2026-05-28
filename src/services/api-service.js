@@ -44,6 +44,22 @@ export const apiService = {
             handleError(error, 'Falha ao buscar comentários do post');
         }
 
+    },
+
+    async getPostWithComments(posts) {
+        try {
+            const results = await Promise.all(
+                posts.map(async (post) => {
+                    const comments = await apiService.getCommentsByPost(post.id);
+                    console.log('Comentários do post', post.id, ':', comments);
+                    return { ...post, comments };
+                })
+            );
+            console.log('Postssss com comentários!!:', results);
+            return results;
+        } catch (error) {
+            handleError(error, 'Falha ao buscar post com comentários');
+        }
     }
 
 }

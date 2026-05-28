@@ -4,10 +4,11 @@ import { apiService } from "../../services/api-service";
 
 
 
-export function useUserQuery(userId) {
+export function usePostQuery(userId) {
 
     return useQuery({
         queryKey: ['posts', userId],
-        queryFn: () => apiService.getPostByUser(userId)
+        queryFn: () => apiService.getPostByUser(userId),
+        enabled: !!userId, // A query só é executada se userId for válido (não nulo ou indefinido)
     })
 }

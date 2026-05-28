@@ -1,0 +1,67 @@
+
+# Ambiente Virtual
+# (geralmente nomeado de .venv, env ou venv)
+.venv/
+env/
+venv/
+ENV/
+
+# Arquivos de bytecode compilados do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Empacotamento / Distribuição
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Logs e arquivos de Banco de Dados local
+*.log
+*.sqlite
+*.sqlite3
+db.sqlite
+db.sqlite3
+
+# Testes e Cobertura (Coverage)
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Ambiente de Desenvolvimento e Configurações
+.env
+.env.local
+.venv.local
+local_settings.py
+secrets.json
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
