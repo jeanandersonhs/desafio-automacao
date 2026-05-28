@@ -2,7 +2,6 @@
 export default function Metricas({name, metricas }) {
     return (    
     <div className="space-y-2 rounded-lg border border-[rgba(79,221,60,0.14)] bg-white/90 p-4">
-      <h3 className="text-lg font-semibold text-stone-900">Métricas</h3> 
        <h4 className="text-lg font-semibold text-emerald-900">
             Métricas de {name || 'usuário selecionado'}
           </h4>

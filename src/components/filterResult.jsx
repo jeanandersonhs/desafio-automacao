@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useCommentsQuery, usePostsWithComments } from "../hooks/queries/useComentsQuery";
 import { Button } from "./ui/button";
-import RelatorioService from "../services/relatorioService";
+import { relatorioService } from "../services/relatorioService";
 import Metricas from "./Metricas";
 import Resultados from "./Resultados";
 
@@ -68,8 +68,9 @@ export default function FilterResult({ users, idUserSelected, posts }) {
     setMinPostsFilter(e.target.value);
   };
 
-  const handleRelatorio = (metricas) => {
-    return RelatorioService.gerarRelatorio(metricas)  ;
+  const handleRelatorio = (metricas, user) => {
+    console.log('Gerando relatório com as seguintes métricas:', metricas);
+    return relatorioService.gerarRelatorio(metricas, user);
   }
 
   return (
@@ -111,7 +112,7 @@ export default function FilterResult({ users, idUserSelected, posts }) {
           <Metricas name={selectedUser?.name} metricas={metricas} />
           <Button 
             className="mt-4" 
-            onClick={handleRelatorio}>
+            onClick={() => handleRelatorio(metricas, selectedUser)}>
               Gerar Relatório
           
           </Button>
