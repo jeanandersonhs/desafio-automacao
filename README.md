@@ -17,28 +17,28 @@ Aplicação fullstack de análise de usuários que consome a API pública [JSONP
 
 ### Frontend
 
-| Biblioteca / Ferramenta        | Versão     | Finalidade                                           |
-|-------------------------------|------------|------------------------------------------------------|
-| **React**                     | 19         | Biblioteca principal de UI                           |
-| **Vite**                      | 8          | Bundler e servidor de desenvolvimento                |
-| **TailwindCSS**               | 4          | Estilização via utilitários CSS                      |
-| **shadcn/ui + Radix UI**      | —          | Componentes de interface acessíveis e estilizáveis   |
-| **TanStack Query (React Query)** | 5       | Cache e gerenciamento de estado assíncrono           |
-| **Axios**                     | 1.13        | Cliente HTTP para consumo das APIs                   |
-| **ExcelJS**                   | 4          | Geração de relatórios `.xlsx` no navegador           |
-| **Sonner**                    | 2          | Notificações toast                                   |
-| **Lucide React**              | —          | Ícones SVG                                           |
-| **Geist (via Fontsource)**    | —          | Tipografia                                           |
-| **clsx + tailwind-merge**     | —          | Utilitários de composição de classes CSS             |
+| Biblioteca / Ferramenta        | Finalidade                                           |
+|--------------------------------|------------------------------------------------------|
+| **React**                             | Biblioteca principal de UI                           |
+| **Vite**                               | Bundler e servidor de desenvolvimento                |
+| **TailwindCSS**                        | Estilização via utilitários CSS                      |
+| **shadcn/ui + Radix UI**                | Componentes de interface acessíveis e estilizáveis   |
+| **TanStack Query (React Query)**      | Cache e gerenciamento de estado assíncrono           |
+| **Axios**                             | Cliente HTTP para consumo das APIs                   |
+| **ExcelJS**                           | Geração de relatórios `.xlsx` no navegador           |
+| **Sonner**                             | Notificações toast                                   |
+| **Lucide React**                    | Ícones SVG                                           |
+| **Geist (via Fontsource)**             | Tipografia                                           |
+| **clsx + tailwind-merge**             | Utilitários de composição de classes CSS             |
 
 ### Backend
 
-| Biblioteca / Ferramenta | Versão  | Finalidade                                            |
-|------------------------|---------|-------------------------------------------------------|
-| **FastAPI**            | —       | Framework web assíncrono (Python)                     |
-| **Uvicorn**            | —       | Servidor ASGI para execução do FastAPI                |
-| **Pydantic**           | —       | Validação de dados e tipagem dos schemas              |
-| **openpyxl**           | —       | Leitura/escrita de arquivos Excel pelo backend        |
+| Biblioteca / Ferramenta | Finalidade                                            |
+|----------------------------|-------------------------------------------------------|
+| **FastAPI**               | Framework web assíncrono (Python)                     |
+| **Uvicorn**                 | Servidor ASGI para execução do FastAPI                |
+| **Pydantic**               | Validação de dados e tipagem dos schemas              |
+| **openpyxl**              | Leitura/escrita de arquivos Excel pelo backend        |
 
 ---
 
