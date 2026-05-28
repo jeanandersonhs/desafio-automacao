@@ -4,7 +4,7 @@ Aplicação fullstack de análise de usuários que consome a API pública [JSONP
 
 ---
 
-## 🗂️ Sumário
+##  Sumário
 
 - [Tecnologias](#-tecnologias)
 - [Arquitetura do Sistema](#-arquitetura-do-sistema)
@@ -56,7 +56,7 @@ Aplicação fullstack de análise de usuários que consome a API pública [JSONP
 
 
 
-## 🚀 Como Rodar
+##  Como Rodar
 
 ### Pré-requisitos
 
